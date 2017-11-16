@@ -69,6 +69,6 @@ if __name__ == '__main__':
 
     t_data = train_data(y_2016)
 
-    inp_data_10 = t_data.get_hist_data(50)
+    inp_data_10 = t_data.get_hist_data(10)
 
     #print inp_data_10['AAPL']
