@@ -1,5 +1,5 @@
 # Fundamental Data
-# Other financial data not included in fina_stats 
+# Other financial data not included in fina_stats
 import pandas as pd
 import numpy as np
 
@@ -10,13 +10,18 @@ class fin_stats_2(object):
         self.df_fin_all = pd.read_csv(self.path)
 
         # Preprocess data
+
+        # Remove rows with missing year information.
+        missing_year = self.df_fin_all[self.df_fin_all['fyear'].isnull()].index.values.tolist()
+        self.df_fin_all = self.df_fin_all.drop(self.df_fin_all.index[missing_year])
+        self.df_fin_all = self.df_fin_all.reset_index(drop=True)
+
         self.df_fin_all = self.df_fin_all.set_index('fyear')
         self.df_fin_all = self.df_fin_all.fillna(0.)
 
         # Select financial statements variables
         self.others = ['re','wcapch','wcapc','unwcc','nim','citotal','cga',
                     'mrc1','mrc2','mrc3','mrc4','mrc5']
-
 
     def get_sheet(self,tickr):
 

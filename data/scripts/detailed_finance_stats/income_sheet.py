@@ -8,6 +8,9 @@ class income_sheet(object):
         self.all_income_sheet_path = all_income_sheet_path
         self.df_income_all = pd.read_csv(self.all_income_sheet_path)
 
+        missing_year = self.df_income_all[self.df_income_all['fyear'].isnull()].index.values.tolist()
+        self.df_income_all = self.df_income_all.drop(self.df_income_all.index[missing_year])
+
     def get_income_sheet(self,tickr):
         # Subset company data set
         df_raw = self.df_income_all[self.df_income_all["tic"] == tickr].copy()

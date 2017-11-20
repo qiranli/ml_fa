@@ -10,6 +10,11 @@ class fin_stats(object):
         self.df_fin_all = pd.read_csv(self.path)
 
         # Preprocess data
+        # Remove rows with missing year information.
+        missing_year = self.df_fin_all[self.df_fin_all['fyear'].isnull()].index.values.tolist()
+        self.df_fin_all = self.df_fin_all.drop(self.df_fin_all.index[missing_year])
+        self.df_fin_all = self.df_fin_all.reset_index(drop=True)
+
         self.df_fin_all = self.df_fin_all.set_index('fyear')
         self.df_fin_all = self.df_fin_all.fillna(0.)
 
@@ -46,7 +51,6 @@ class fin_stats(object):
 
         self.c_sheet = cash_oper + cash_investment + cash_finance
 
-
     def get_sheet(self,tickr,sheet_name):
 
         if sheet_name == "balance_sheet":
@@ -56,7 +60,7 @@ class fin_stats(object):
         elif sheet_name == "cashflow_sheet":
             name = self.c_sheet
         else:
-            print(" Name Error: Provide a valid sheet name")
+            print("Name Error: Provide a valid sheet name")
 
         # Subset company data set
         df_raw = self.df_fin_all[self.df_fin_all["tic"] == tickr]

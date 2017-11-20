@@ -8,6 +8,10 @@ class cashflow(object):
         self.all_cashflow_path = all_cashflow_path
         self.df_cashflow_all = pd.read_csv(self.all_cashflow_path)
 
+        # Remove rows with missing year information.
+        missing_year = self.df_cashflow_all[self.df_cashflow_all['fyear'].isnull()].index.values.tolist()
+        self.df_cashflow_all = self.df_cashflow_all.drop(self.df_cashflow_all.index[missing_year])
+
     def get_cashflow(self,tickr):
         # Subset company data set
         df_raw = self.df_cashflow_all[self.df_cashflow_all["tic"] == tickr].copy()

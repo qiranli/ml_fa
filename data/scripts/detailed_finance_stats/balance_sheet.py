@@ -8,6 +8,10 @@ class balance_sheet(object):
         self.all_blnc_sheet_path = all_blnc_sheet_path
         self.df_blnc_all = pd.read_csv(self.all_blnc_sheet_path)
 
+        missing_year = self.df_blnc_all[self.df_blnc_all['fyear'].isnull()].index.values.tolist()
+        self.df_blnc_all = self.df_blnc_all.drop(self.df_blnc_all.index[missing_year])
+        self.df_blnc_all = self.df_blnc_all.reset_index(drop=True)
+
     def get_blnc_sheet(self,tickr):
         # Subset company data set
         df_raw = self.df_blnc_all[self.df_blnc_all["tic"] == tickr].copy()
