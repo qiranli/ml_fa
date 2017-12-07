@@ -22,8 +22,8 @@ def get_trend_data(df_t):
     # t+1 step
     df_t_copy = df_t.copy()
     df_t_1 = df_t.copy()
-    df_t_1 = df_t_1.drop([cols[-1]],axis=1).as_matrix()
-    df_t_copy = df_t_copy.drop([cols[0]],axis=1).as_matrix()
+    df_t_1 = df_t_1.drop([cols[0]],axis=1).as_matrix()
+    df_t_copy = df_t_copy.drop([cols[-1]],axis=1).as_matrix()
 
     df_growth = df_t_1 - df_t_copy
 
