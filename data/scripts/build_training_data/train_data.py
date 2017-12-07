@@ -8,6 +8,7 @@ import os
 from data.scripts.simplified_finance_stats.fin_stats import fin_stats
 from data.scripts.simplified_finance_stats.fin_ratios import get_ratios
 from data.scripts.simplified_finance_stats.fin_stats_2 import fin_stats_2
+from data.scripts.simplified_finance_stats.stock_stats import stock_stats
 from report_13f.company_13f import company_13f
 
 
@@ -20,12 +21,17 @@ class train_data(object):
         # Set up paths for data source
         self.fin_data1 = self.base_path + 'combined_all_us.csv'
         self.fin_data2 = self.base_path + 'others_all_us.csv'
+        self.mrkt_data = self.base_path + 'stock_stats_all_us.csv'
 
         # Instantiate the all dataframe
         self.finances = fin_stats(self.fin_data1)
         self.other_fin = fin_stats_2(self.fin_data2)
+        self.mrkt = stock_stats(self.mrkt_data)
 
     def get_hist_data(self,n_years):
+
+        # Returns a dictionary with company symbols as keys and historical
+        # data as values
         # n_years: Most recent history of n_years
 
         hist_data = {}
@@ -40,10 +46,14 @@ class train_data(object):
             c_b = self.finances.get_sheet(c,"balance_sheet")
             c_i = self.finances.get_sheet(c,"income_sheet")
             c_c = self.finances.get_sheet(c,"cashflow_sheet")
-            c_o = self.other_fin.get_sheet(c)
-            c_fin_stats = pd.concat([c_b,c_i,c_c,c_o])
+            c_o = self.other_fin.get_sheet(c) # other data not in bic
+            c_m = self.mrkt.get_stock_data(c) # market data of stocks
+            c_fin_stats = pd.concat([c_b,c_i,c_c,c_o,c_m])
             c_ratio = get_ratios(c_b,c_i,c_c)
             c_df = pd.concat([c_fin_stats,c_ratio])
+
+            # Replace missing with -1
+            c_df = c_df.fillna(-1.)
 
             # select the last n_years data
             year = c_year[i]
@@ -109,4 +119,4 @@ if __name__ == '__main__':
     names,data = t_data.transform_c_to_1d(inp_data_10)
 
     print names
-    print data.shape
+    print inp_data_10['WFC']

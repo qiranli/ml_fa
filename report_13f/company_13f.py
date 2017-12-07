@@ -9,7 +9,18 @@ from Levenshtein import distance
 
 class company_13f(object):
 
+    """ Extract a company's 13f fillings in a dataframe format.
+
+        Outputs:
+                    1. Company info for positive, negative or no_change within
+                        the 13f filings for the stated year
+                    2. Get a df for historical data
+
+
+    """
+
     def __init__(self,path,fin_all_us_data_path):
+        """ Instantiates with the required paths"""
         self.path = path
         self.df_13f_all = pd.read_csv(path)
 
@@ -46,6 +57,7 @@ class company_13f(object):
         self.cols = ['ticker','decision','r_year']
 
     def fill_missing(self,df_13f,df_all):
+        """ Fills the missing tickr from company name """
         missing_ix = df_13f[df_13f['ticker'].isnull()].index.tolist()
 
         print("Status of dataframe before filling missing names:")
@@ -83,9 +95,9 @@ class company_13f(object):
         return df_13f
 
     def get_tic(self,df,inp_str):
-        # Returns the tic symbol matching the name of the company
-        # using levenshtein distance in sequence.
-        # Starting with the first element and matching sequentially
+        """Returns the tic symbol matching the name of the company
+            using levenshtein distance in sequence.
+            Starting with the first element and matching sequentially"""
 
         df = df.drop_duplicates().reset_index()
         df['conm'] = df['conm'].str.split()
@@ -140,6 +152,8 @@ class company_13f(object):
 
 
     def get_positive(self,year):
+        """ Returns the df with securities where the position was added from
+            last year"""
         cols = self.cols
         df_year =  self.df_13f_all[cols][self.df_13f_all['r_year']==year]
         df_year_tmp = df_year[df_year['decision']==1]
@@ -147,6 +161,8 @@ class company_13f(object):
         return df_year_tmp
 
     def get_no_change(self,year):
+        """ Returns the df with securities where there was no change in position
+            from last year"""
         cols = self.cols
         df_year =  self.df_13f_all[cols][self.df_13f_all['r_year']==year]
         df_year_tmp = df_year[df_year['decision']==0]
@@ -154,6 +170,8 @@ class company_13f(object):
         return df_year_tmp
 
     def get_negative(self,year):
+        """ Returns the df with securities where the position was reduced from
+            last year"""
         cols = self.cols
         df_year =  self.df_13f_all[cols][self.df_13f_all['r_year']==year]
         df_year_tmp = df_year[df_year['decision']== -1]
@@ -161,6 +179,7 @@ class company_13f(object):
         return df_year_tmp
 
     def get_list_all_hist(self,status):
+        """ Returns df with all the histrocial data of the company """
         cols = self.cols
         df_all_hist = pd.DataFrame(columns = cols)
         year_list = self.df_13f_all.r_year.unique()

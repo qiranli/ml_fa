@@ -4,8 +4,21 @@ import pandas as pd
 import numpy as np
 
 class fin_stats(object):
+    """ Get fundamental data of a company. Includes
+
+
+        1. Balance sheet
+        2. Income sheet
+        3. Cash Flow sheet
+
+        Methods:
+                get_sheet()
+
+                
+    """
 
     def __init__(self,path):
+
         self.path = path
         self.df_fin_all = pd.read_csv(self.path)
 
@@ -52,6 +65,7 @@ class fin_stats(object):
         self.c_sheet = cash_oper + cash_investment + cash_finance
 
     def get_sheet(self,tickr,sheet_name):
+        """ Returns the specified sheet for a company with tickr symbol """
 
         if sheet_name == "balance_sheet":
             name = self.b_sheet
