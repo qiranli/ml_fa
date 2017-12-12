@@ -12,7 +12,13 @@ def get_trend_data(df_t):
 
     # df_t : df_time_series
 
+    if df_t is None:
+        return "Not enough last n years data"
+
     df = pd.DataFrame()
+
+    # Recent value
+    df['most_recent_value'] = df_t[[df_t.columns.tolist()[-1]]]
     # Mean and std_dev
     df['mean'] =  df_t.mean(axis=1)
     df['std']  = df_t.std(axis=1)

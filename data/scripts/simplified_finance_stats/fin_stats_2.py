@@ -2,6 +2,8 @@
 # Other financial data not included in fin_stats
 import pandas as pd
 import numpy as np
+from data.scripts.data_cleaning_tools.data_cleaning import data_cleaning
+
 
 class fin_stats_2(object):
     """ Get fundamental data which is not included in balance,income or cashflow sheets.
@@ -19,10 +21,16 @@ class fin_stats_2(object):
 
         # Preprocess data
 
+        # Clean the data
+        dc = data_cleaning()
+        # remove data with missing ticker symbols
+        self.df_fin_all = dc.remove_missing_tic_data(self.df_fin_all)
+        # remove pre IPO data
+        IPO_path = "D:\\FA\\data\\stock_stats\\IPO_year.csv"
+        self.df_fin_all = dc.remove_pre_IPO_data(IPO_path,self.df_fin_all)
+
         # Remove rows with missing year information.
-        missing_year = self.df_fin_all[self.df_fin_all['fyear'].isnull()].index.values.tolist()
-        self.df_fin_all = self.df_fin_all.drop(self.df_fin_all.index[missing_year])
-        self.df_fin_all = self.df_fin_all.reset_index(drop=True)
+        self.df_fin_all = dc.remove_missing_year_data(self.df_fin_all)
 
         self.df_fin_all = self.df_fin_all.set_index('fyear')
         self.df_fin_all = self.df_fin_all.fillna(0.)
@@ -42,7 +50,7 @@ class fin_stats_2(object):
 
         # Check if tickr is not present
         if df_raw.shape[0] == 0:
-            print("Tickr not found")
+            print("%s not found in other data"%tickr)
             return
 
         df_sheet = df_raw.transpose()

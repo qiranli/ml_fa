@@ -1,5 +1,6 @@
-# Get company's timeline information i.e its existence
-# This is useful for comparison with 13-f data
+"""Get company's timeline information i.e its existence
+    This is useful for comparison with 13-f data"""
+
 import pandas as pd
 import numpy as np
 import gc
@@ -7,7 +8,7 @@ import gc
 
 
 class company_timeline(object):
-
+    """Extracts the timeline of existence of the company"""
     def __init__(self,company_list_path):
         self.company_list_path = company_list_path
         self.df_all_data = pd.read_csv(self.company_list_path)
@@ -18,8 +19,8 @@ class company_timeline(object):
         gc.collect()
 
     def get_timeline(self,tickr):
-        # Return the start year, last_active_year and number of years the stock
-        # has been listed on the exchange.
+        """ Return the start year, last_active_year and number of years the stock
+            has been listed on the exchange."""
 
         df_tmp = self.df_comp_time[self.df_comp_time['tic']==tickr].copy()
 
