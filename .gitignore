@@ -1,4 +1,17 @@
+# Data
 *.csv
 *.des
-*.pyc
 *.pkl
+*.png
+*.pptx
+
+# compiled files
+*.pyc
+
+#Ipython
+.ipynb_checkpoints/
+# Created by .ignore support plugin (hsz.mobi)
+### OSX template
+.DS_Store
+.AppleDouble
+.LSOverride
