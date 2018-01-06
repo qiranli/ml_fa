@@ -18,15 +18,15 @@ def get_ratios(b_sheet,i_sheet,c_sheet,o_sheet,mrkt_sheet):
     r = pd.DataFrame(columns = s.columns.tolist())
 
     # Gross Margin
-    r.loc['gross_mrgn'] = (1.*s.loc['sale'] - s.loc['cogs'])/s.loc['sale']
+    r.loc['gross_mrgn'] = (1.*s.loc['revt'] - s.loc['cogs'])/s.loc['revt']
     # Profit Margin
-    r.loc['prft_mrgn'] = (1.*s.loc['niadj']/s.loc['sale'])
+    r.loc['prft_mrgn'] = (1.*s.loc['niadj']/s.loc['revt'])
     # Pre-tax operating margin
-    r.loc['oper_mrgn'] = (1.*s.loc['oiadp']/s.loc['sale'])
+    r.loc['oper_mrgn'] = (1.*s.loc['oiadp']/s.loc['revt'])
     # Capx to revenue
-    r.loc['capx_to_rev'] = (1.*s.loc['capx']/s.loc['sale'])
+    r.loc['capx_to_rev'] = (1.*s.loc['capx']/s.loc['revt'])
     # net investment to revenue
-    r.loc['ni_to_rev'] = (1.*(s.loc['capx']-s.loc['dpc'])/s.loc['sale'])
+    r.loc['ni_to_rev'] = (1.*(s.loc['capx']-s.loc['dpc'])/s.loc['revt'])
     # ROE
     r.loc['roe'] = (1.*s.loc['niadj']/s.loc['seq'])
     # ROA
@@ -34,8 +34,8 @@ def get_ratios(b_sheet,i_sheet,c_sheet,o_sheet,mrkt_sheet):
     # Return on oeprating assets
     r.loc['rooa']=(1.*s.loc['niadj']/(s.loc['at']-s.loc['intan']-\
                     s.loc['che'] - s.loc['ivaeq'] - s.loc['ivao']))
-    # sale to assets (capital intensity)
-    r.loc['sale_to_asts']=(1.*s.loc['sale']/s.loc['at'])
+    # revt to assets (capital intensity)
+    r.loc['revt_to_asts']=(1.*s.loc['revt']/s.loc['at'])
     # ROC
     r.loc['roc'] = (1.*s.loc['niadj']/(s.loc['dltt']+s.loc['seq']))
     # ROIC
@@ -56,7 +56,7 @@ def get_ratios(b_sheet,i_sheet,c_sheet,o_sheet,mrkt_sheet):
     # cash flow from operations
     r.loc['cfo'] = s.loc['niadj'] + s.loc['dpc'] - s.loc['wcapch']
     # fcf to revenue
-    r.loc['fcf_to_sale'] = 1.0*(r.loc['fcf']/s.loc['sale'])
+    r.loc['fcf_to_revt'] = 1.0*(r.loc['fcf']/s.loc['revt'])
     # Asset efficiency ratio
     r.loc['cfo_to_assets'] = 1.0*(s.loc['oancf']/r.loc['roa'])
     # Current liability coverage ratio - test of solvency

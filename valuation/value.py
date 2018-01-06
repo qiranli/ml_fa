@@ -3,6 +3,12 @@
 
 import pandas as pd
 import numpy as np
+import sys
+sys.path.append("..")
+
+from data.scripts.simplified_finance_stats.fin_stats import fin_stats
+from data.scripts.simplified_finance_stats.fin_stats_2 import fin_stats_2
+from data.scripts.simplified_finance_stats.stock_stats import stock_stats
 from input_params import get_inp_params
 
 class valuation(object):
@@ -13,9 +19,25 @@ class valuation(object):
 
     """
 
-    def __init__(self,tick=None,fcf,finances=None,fin_others=None,mkt_data=None):
+    def __init__(self,fcf,tick,finances=None,fin_others=None,mkt_data=None):
         """ Instantiates using inp_parameters (from inp_params.py) and fcf.
         fcf is a dict containing non-terminal and terminal cashflows"""
+
+        # If dataset if not loaded already, load the dataset
+        if finances == None:
+
+            print("Dataset not loaded, loading the dataset...")
+
+            # Set path for data
+            base_path = '../data/'
+            sheets_path = 'combined_simplified/combined_all_us.csv'
+            other_path = 'combined_simplified/others_all_us.csv'
+            mkt_path = 'combined_simplified/stock_stats_all_us.csv'
+
+            # setup all data
+            finances = fin_stats(base_path + sheets_path)
+            fin_others = fin_stats_2(base_path + other_path)
+            mkt_data = stock_stats(base_path + mkt_path)
 
         self.inp_params = get_inp_params(tick,finances,fin_others,mkt_data)
         self.fcf = fcf
@@ -107,7 +129,7 @@ class valuation(object):
         # common equity value or intrinsic value
         val_eq_common = val_eq  - val_op
 
-        # comon equity value per share
+        # common equity value per share
         val_per_share = val_eq_common/self.inp_params['outstanding_shares']
 
         # Price as a % of value
@@ -126,7 +148,7 @@ if __name__ == '__main__':
 
     fcf['terminal'] = 23336.29
 
-    v = valuation(fcf)
+    v = valuation(fcf,'FB')
 
     v1,p1 = v.val_eq()
 

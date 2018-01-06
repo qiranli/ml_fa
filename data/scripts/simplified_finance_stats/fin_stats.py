@@ -55,7 +55,7 @@ class fin_stats(object):
                     liabilities_rest
 
         # Income Statement
-        revenue = ['sale']
+        revenue = ['revt']
         costs = ['cogs','xsga']
         operations = ['oibdp','oiadp','xint','nopi']
         income = ['spi','pi','txt','ib','niadj','epspx','epsfx']
@@ -98,5 +98,8 @@ class fin_stats(object):
         df_sheet = df_raw.transpose()
         df_sheet = df_sheet.reindex(name)
         df_sheet.columns = map(int,df_sheet.columns.tolist())
+
+        # Remove all columns where the entire column has 0 entry
+        df_sheet = df_sheet.loc[:, (df_sheet != 0).any(axis=0)]
 
         return df_sheet

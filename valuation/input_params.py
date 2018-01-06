@@ -18,17 +18,17 @@ def get_inp_params(tick,finances,fin_others,mkt_data):
     inp_params = {}
     inp_params['inc_country'] = 'USA'
     inp_params['industry'] = 'default'
-    inp_params['revenue'] = 30288.0
-    inp_params['ebit'] = 13786.0
-    inp_params['interest_expense'] = 0.0
-    inp_params['bk_val_equity'] = 62188.0
-    inp_params['bk_val_debt'] = 0.0
+    inp_params['revenue'] = i.loc['revt'].iloc[-1] # latest revenue
+    inp_params['ebit'] = i.loc['pi'].iloc[-1]
+    inp_params['interest_expense'] = i.loc['xint'].iloc[-1]
+    inp_params['bk_val_equity'] = b.loc['seq'].iloc[-1]
+    inp_params['bk_val_debt'] = b.loc['dlc'].iloc[-1] + b.loc['dltt'].iloc[-1]
     inp_params['R_D_expenses'] = False
     inp_params['lease_commit'] = False
-    inp_params['cash_eq'] = 32306.0
-    inp_params['outstanding_shares'] = 2898.0
-    inp_params['curr_stock_price'] = 152.0
-    inp_params['eff_tax_r'] = .1
+    inp_params['cash_eq'] = b.loc['che'].iloc[-1]
+    inp_params['outstanding_shares'] = mk.loc['csho'].iloc[-1]
+    inp_params['curr_stock_price'] = mk.loc['prcc_c'].iloc[-1]
+    inp_params['eff_tax_r'] = (1.0*i.loc['txt'].iloc[-1])/i.loc['pi'].iloc[-1]
     inp_params['marg_tax_r'] = .28
 
     # Drivers
@@ -41,7 +41,7 @@ def get_inp_params(tick,finances,fin_others,mkt_data):
 
     # Market parameters
     # Risk-free rate (rf_rate), US 10 year note
-    inp_params['rf_rate'] = 0.0247
+    inp_params['rf_rate'] = 0.02405
     # Initial cost of capital
     inp_params['cost_of_capital'] = 0.08
 
