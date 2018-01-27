@@ -1,3 +1,14 @@
+"""
+Builds the fundamental dataset for top 2000 market cap equitities from WRDS.
+Requires WRDS account. Enter username and password when prompted.
+
+Features: datadate,	gvkey,	year,  month,  mom1m,	mom3m,	mom6m,	mom9m,
+        mrkcap,	entval,	saleq_ttm,	cogsq_ttm,	xsgaq_ttm,	oiadpq_ttm,
+        niq_ttm,	cheq_mrq,	rectq_mrq,	invtq_mrq,	acoq_mrq,
+        ppentq_mrq,	aoq_mrq,	dlcq_mrq,	apq_mrq,	txpq_mrq,
+        lcoq_mrq,   ltq_mrq,	csho_1yr_avg
+"""
+
 import wrds
 import pandas as pd
 import datetime
@@ -7,7 +18,7 @@ from time import time
 from wrds_data_processing import data_processing
 import sys
 
-t1 = time()
+start_time = time()
 
 # Connect to WRDS data engine
 db = wrds.Connection()
@@ -155,7 +166,8 @@ for date in dates:
 
     del df_date, df_norm
 
+# Output the csv
 df_all_eq.to_csv("top_2000_eq.csv")
-exec_time = time() -t1
+exec_time = time() -start_time
 
 print exec_time
