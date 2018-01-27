@@ -4,6 +4,7 @@
 *.pkl
 *.png
 *.pptx
+*.jpg
 
 # compiled files
 *.pyc
