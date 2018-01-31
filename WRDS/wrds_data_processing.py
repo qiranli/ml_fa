@@ -7,9 +7,12 @@ import sys
 class data_processing(object):
     """ Process data from wrds into usable format """
 
-    def __init__(self,raw_data,equity_list=None):
-        self.raw_data = raw_data
+    def __init__(self,lag = 3,equity_list=None):
+        self.lag = lag
         self.equity_list = equity_list
+
+        if self.lag%3 != 0:
+            print("Enter the lag value in multples of 3. Lag frequency is in quarters")
 
         self.income_list = ['saleq','cogsq','xsgaq','oiadpq','niq']
         self.ttm_list = [x + '_ttm' for x in self.income_list]
@@ -19,7 +22,17 @@ class data_processing(object):
         self.mrq_list = [x + '_mrq' for x in self.blnc_sheet_list]
 
     def add_1_day(self,date):
+        """Adds 1 day to the given date"""
         return date + datetime.timedelta(days=1)
+
+    def add_date_lag(self,date):
+        """Adds the lag to the given date"""
+        return date + relativedelta(months=self.lag)
+
+    def add_lag(self,df):
+        """Adds the lag to the index of the dataframe"""
+        df.index = df.index.map(self.add_date_lag)
+        return df
 
     def create_df_monthly(self,df):
         """Returns the new empty df with monthly frequency between start and
@@ -50,17 +63,19 @@ class data_processing(object):
         y = date.year
 
         if (m,d) in q_last_days:
-            return date
+            mrq_date = date
 
         else:
             if m>=1 and m<=3:
-                return datetime.date(y-1,12,31)
+                mrq_date = datetime.date(y-1,12,31)
             elif m>=4 and m<=6:
-                return datetime.date(y,3,31)
+                mrq_date = datetime.date(y,3,31)
             elif m>=7 and m<=9:
-                return datetime.date(y,6,30)
+                mrq_date = datetime.date(y,6,30)
             elif m>=10 and m<=12:
-                return datetime.date(y,9,30)
+                mrq_date = datetime.date(y,9,30)
+
+        return mrq_date
 
     def get_next_q_date(self,date):
         """Returns last day of most recent quarter for which the financial
@@ -257,6 +272,7 @@ class data_processing(object):
 
 if __name__=='__main__':
 
+    # Test
     y = pd.read_pickle('y.pkl')
     stock_split_df = pd.read_pickle('split.pkl')
     price_df = pd.read_pickle('prccm.pkl')

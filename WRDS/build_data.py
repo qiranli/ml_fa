@@ -7,6 +7,8 @@ Features: datadate,	gvkey,	year,  month,  mom1m,	mom3m,	mom6m,	mom9m,
         niq_ttm,	cheq_mrq,	rectq_mrq,	invtq_mrq,	acoq_mrq,
         ppentq_mrq,	aoq_mrq,	dlcq_mrq,	apq_mrq,	txpq_mrq,
         lcoq_mrq,   ltq_mrq,	csho_1yr_avg
+
+Takes about 40 minutes to build the complete dataset and outputs a csv
 """
 
 import wrds
@@ -27,7 +29,7 @@ db = wrds.Connection()
 #### SQL Query-----------------------------------------------------------####
 #############################################################################
 
-# Query to get list of companies with top n market cap
+# Query to get list of companies with top 2000 market cap
 q1 = ("select a.gvkey,a.latest,b.cshoq,b.prccq,b.mkvaltq,b.cshoq*b.prccq as market_cap,b.curcdq "
      "from "
         "(select gvkey,max(datadate) as latest "
@@ -115,7 +117,10 @@ for key in gvkey_list:
     #print("\n")
 
     # Start data processing
-    dp = data_processing(df)
+    dp = data_processing(lag=3)
+
+    # Add the lag to the date index
+    df = dp.add_lag(df)
 
     # Create new df with monthly frequency (empty)
     new_df_empty = dp.create_df_monthly(df)
@@ -167,7 +172,7 @@ for date in dates:
     del df_date, df_norm
 
 # Output the csv
-df_all_eq.to_csv("top_2000_eq.csv")
+df_all_eq.to_csv("top_2000_eq_w_3mo_lag.csv")
 exec_time = time() -start_time
 
 print exec_time
