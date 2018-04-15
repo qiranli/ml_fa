@@ -14,11 +14,13 @@ class data_processing(object):
         if self.lag%3 != 0:
             print("Enter the lag value in multples of 3. Lag frequency is in quarters")
 
-        self.income_list = ['saleq','cogsq','xsgaq','oiadpq','niq']
+        self.income_list = ['saleq','cogsq','xsgaq','oiadpq','niq','revtq','xintq','nopiq','spiq',
+               'piq','txtq','ibq','epspxq','epsfxq']
         self.ttm_list = [x + '_ttm' for x in self.income_list]
 
-        self.blnc_sheet_list = ['cheq','rectq','invtq','acoq','ppentq','aoq',
-                                'dlcq','apq','txpq','lcoq','ltq','dlttq','cshoq']
+        self.blnc_sheet_list = ['cheq','rectq','invtq','acoq','actq','ppentq','ivaeqq','ivaoq','intanq','aoq','atq',
+                                'dlcq','apq','txpq','lcoq','lctq','dlttq','txditcq','loq','ltq','mibq',
+                   'pstkq','ceqq','seqq','cshoq']
         self.mrq_list = [x + '_mrq' for x in self.blnc_sheet_list]
 
     def add_1_day(self,date):

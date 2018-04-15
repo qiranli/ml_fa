@@ -20,7 +20,7 @@ class stock_stats(object):
         # remove data with missing ticker symbols
         self.df_fin_all = dc.remove_missing_tic_data(self.df_fin_all)
         # remove pre IPO data
-        IPO_path = "D:\\FA\\data\\stock_stats\\IPO_year.csv"
+        IPO_path = "/Users/liqiran/Desktop/ml_fa/data/stock_stats/IPO_year.csv"
         self.df_fin_all = dc.remove_pre_IPO_data(IPO_path,self.df_fin_all)
 
         # Remove rows with missing year information.

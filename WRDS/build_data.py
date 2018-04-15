@@ -36,23 +36,23 @@ q1 = ("select a.gvkey,a.latest,b.cshoq,b.prccq,b.mkvaltq,b.cshoq*b.prccq as mark
          "from "
          "compm.fundq where datadate > '2017-01-01' "
          "group by gvkey) a inner join "
-             "(select gvkey,datadate,mkvaltq,cshoq,prccq,curcdq "
+             "(select gvkey,datadate,mkvaltq,cshoq,prccq "
                 "from compm.fundq where cshoq>0 and prccq>0 and curcdq='USD') b "
     "on a.gvkey = b.gvkey and a.latest=b.datadate "
      "order by market_cap desc "
-    "limit 2000")
+    "limit 20")
 
 mrk_df = db.raw_sql(q1)
-top_2000_eq_gvkey_list = mrk_df['gvkey'].values.tolist()
-top_2000_eq_gvkey = tuple(["'%s'"%str(i) for i in top_2000_eq_gvkey_list])
-top_2000_eq_gvkey = ",".join(top_2000_eq_gvkey)
+top_20_eq_gvkey_list = mrk_df['gvkey'].values.tolist()
+top_20_eq_gvkey = tuple(["'%s'"%str(i) for i in top_20_eq_gvkey_list])
+top_20_eq_gvkey = ",".join(top_20_eq_gvkey)
 
 
 # Query to get fundamental Data
-q2 = ("select datadate,gvkey,tic,saleq,cogsq,xsgaq,oiadpq,niq,"
-      "cheq, rectq, invtq, acoq, ppentq, aoq, dlcq, apq, txpq, lcoq, ltq, dlttq,cshoq "
+q2 = ("select datadate,gvkey,tic,saleq,cogsq,xsgaq,oiadpq,niq,revtq,"
+      "cheq, rectq, invtq, acoq, ppentq, aoq, dlcq, apq, txpq, lcoq, ltq, dlttq,cshoq,actq "
     "from compm.fundq "
-     "where gvkey in (%s) ")%top_2000_eq_gvkey
+     "where gvkey in (%s) ")%top_20_eq_gvkey
 fundq_df = db.raw_sql(q2)
 print("Shape of raw dataframe: %g,%g"%fundq_df.shape)
 print('\n')
@@ -60,25 +60,25 @@ print('\n')
 # Query to get price data
 q3 = ("select gvkey,datadate,prccm "
      "from compm.secm "
-     "where gvkey in (%s) ")%top_2000_eq_gvkey
+     "where gvkey in (%s) ")%top_20_eq_gvkey
 price_df_all = db.raw_sql(q3).sort_values('datadate')
 
 # Query to get stock_split data
 q4 = ("select gvkey,datadate,split "
      "from compm.sec_split "
-     "where gvkey in (%s) ")%top_2000_eq_gvkey
+     "where gvkey in (%s) ")%top_20_eq_gvkey
 stock_split_df_all = db.raw_sql(q4).sort_values('datadate')
 
 ####--------------------------------------------------------------------------
 
 # Build balance sheet features
 blnc_sheet_list = ['cheq','rectq','invtq','acoq','ppentq','aoq',
-                                'dlcq','apq','txpq','lcoq','ltq','dlttq','cshoq']
+                                'dlcq','apq','txpq','lcoq','ltq','dlttq','cshoq','actq']
 
 # Build income sheet features
-income_list = ['saleq','cogsq','xsgaq','oiadpq','niq']
+income_list = ['saleq','cogsq','xsgaq','oiadpq','niq','revtq']
 
-gvkey_list = top_2000_eq_gvkey_list
+gvkey_list = top_20_eq_gvkey_list
 print len(gvkey_list)
 
 df_all = fundq_df[['gvkey','datadate'] + income_list + blnc_sheet_list]
@@ -172,7 +172,7 @@ for date in dates:
     del df_date, df_norm
 
 # Output the csv
-df_all_eq.to_csv("top_2000_eq_w_3mo_lag.csv")
+df_all_eq.to_csv("top_20_eq_w_3mo_lag.csv")
 exec_time = time() -start_time
 
 print exec_time

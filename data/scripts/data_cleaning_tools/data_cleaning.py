@@ -75,8 +75,8 @@ class data_cleaning(object):
 
 if __name__ == '__main__':
     # Test
-    path = "D:\\FA\\data\\cash_flow\\cash_flow_all_us_list.csv"
-    ipo_path = "D:\\FA\\data\\stock_stats\\IPO_year.csv"
+    path = "/Users/liqiran/Desktop/ml_fa/data/stock_stats/data/cash_flow/cash_flow_all_us_list.csv"
+    ipo_path = "/Users/liqiran/Desktop/ml_fa/data/stock_stats/IPO_year.csv"
 
     df = pd.read_csv(path)
     dc = data_cleaning(df)
